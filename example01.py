@@ -5,9 +5,7 @@ import time
 from pygame2.locals import *
 
 pygame.init()
-
 screen = pygame.display.set_mode((400, 300))
-
 pygame.display.set_caption('Hello World!')
 
 asteroid = pygame.image.load('asteroid_1.png')
@@ -18,7 +16,7 @@ while True: # main game loop
             pygame.quit()
             sys.exit()
 
-    screen.fill((255,255,255))
+    screen.fill((0,0,0))
     screen.blit(asteroid, (50, 50))
     pygame.display.update()
 
