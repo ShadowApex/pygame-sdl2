@@ -21,3 +21,9 @@ Requirements
 
 * pysdl2
 * pymunk
+
+
+Example
+=======
+
+![screenshot](screenshot.png)
