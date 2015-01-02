@@ -6,10 +6,9 @@ import sdl2.sdlgfx
 from sdl2 import surface
 
 import pygame2
-#import pygame2.display
 
 
-def scale(surface, size, dest_sprite=None):
+def scale(surface, size, dest_sprite=None, resample=0):
     """Right now this only scales proportionally by width."""
 
     if not pygame2.display.window:
@@ -17,51 +16,27 @@ def scale(surface, size, dest_sprite=None):
 
     sprite = surface.sprite
 
-    # Get the surface depending on our rendering type.
-    if pygame2.display.window.type == "software":
-        scaled_sprite = pygame2.display.window.factory.from_surface(sprite.surface)
-        original_surface = sprite.surface
+    # Resize the image using PIL
+    img = sprite.pil.resize(size, resample)
 
-    # If this is a hardware surface, we need to convert it to a software
-    # surface, perform the scaling, and then convert it back to a texture.
-    else:
-        scaled_sprite = pygame2.display.window.sw_factory.from_surface(sprite.sw_sprite.surface)
-        original_surface = sprite.sw_sprite.surface
+    # Create an SDL2 surface from our sprite.
+    surface, pil_surface = pygame2.image.load_image(img)
 
-    # Find out how much we need to scale the sprite by.
-    scale = float(size[0]) / float(sprite.size[0])
+    # Create a new sprite from the surface.
+    scaled_sprite = pygame2.display.window.factory.from_surface(surface, True)
+    scaled_sprite.angle = 0
+    scaled_sprite.pil = pil_surface
 
-    # Create a new sprite that we'll scale.
-    scaled_sprite.x = sprite.x
-    scaled_sprite.y = sprite.y
-    scaled_sprite.angle = sprite.angle
+    # If we're using a software renderer, keep an original for rotation.
+    #if pygame2.display.window.type == "software":
+    #    sprite.original = pygame2.display.window.factory.from_image(filename)
+    #else:
+    #    sprite.sw_sprite = pygame2.display.window.sw_factory.from_image(filename)
 
-    rotozoom = sdl2.sdlgfx.rotozoomSurface
-    surface = rotozoom(original_surface,
-                       0,
-                       scale,
-                       1).contents
+    image = pygame2.Surface(sprite=scaled_sprite)
 
-    sdl2.SDL_FreeSurface(scaled_sprite.surface)
-    scaled_sprite.surface = surface
 
-    if pygame2.display.window.type == "software":
-        if dest_sprite:
-            dest_sprite = scaled_sprite
-
-        return scaled_sprite
-
-    else:
-        scaled_hw_sprite = pygame2.display.window.factory.from_surface(scaled_sprite.surface)
-        scaled_hw_sprite.sw_sprite = pygame2.display.window.factory.from_surface(scaled_sprite.surface)
-        scaled_hw_sprite.x = scaled_sprite.x
-        scaled_hw_sprite.y = scaled_sprite.y
-        scaled_hw_sprite.angle = scaled_sprite.angle
-
-        if dest_sprite:
-            dest_sprite = scaled_hw_sprite
-
-        return scaled_hw_sprite
+    return image
 
 
 def copy(surface):
