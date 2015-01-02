@@ -25,9 +25,11 @@ def load(filename):
 
     # If we're using a software renderer, keep an original for rotation.
     if pygame2.display.window.type == "software":
-        sprite.original = pygame2.display.window.factory.from_image(filename)
+        sprite.original = pygame2.display.window.factory.from_surface(surface)
+        sprite.original.pil = pil_surface
     else:
-        sprite.sw_sprite = pygame2.display.window.sw_factory.from_image(filename)
+        sprite.sw_sprite = pygame2.display.window.sw_factory.from_surface(surface)
+        sprite.sw_sprite.pil = pil_surface
 
     image = pygame2.Surface(sprite=sprite)
 

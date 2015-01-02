@@ -11,6 +11,7 @@ import pygame2.app
 import pygame2.event
 import pygame2.joystick
 import pygame2.transform
+import pygame2.time
 
 def init():
     sdl2.ext.init()
@@ -27,6 +28,25 @@ class Surface(object):
         else:
             self.sprite = None
 
+        self.alpha = 255
+
+    def convert(self):
+        # This does nothing and is here for pygame compatibility.
+        return self
+
+    def convert_alpha(self):
+        # This does nothing and is here for pygame compatibility.
+        return self
+
+    def get_alpha(self):
+        # first, which band is the alpha channel?
+        try:
+            alpha_index = self.sprite.pil.getbands().index('A')
+        except ValueError:
+            return None # no alpha channel, presumably
+
+        return self.alpha
+
     def get_size(self):
         return self.sprite.size
 
@@ -39,6 +59,10 @@ class Surface(object):
     def copy(self):
         print "  copying surface!"
         return pygame2.transform.copy(self)
+
+    def set_colorkey(self, colorkey):
+        # Right now this does nothing
+        pass
 
 
 class Rect(object):
