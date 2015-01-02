@@ -19,16 +19,17 @@ def load(filename):
     surface, pil_surface = load_image(filename)
 
     # Create a sprite.
-    sprite = pygame2.display.window.factory.from_surface(surface, True)
+    sprite = pygame2.display.window.factory.from_surface(surface)
     sprite.angle = 0
     sprite.pil = pil_surface
 
     # If we're using a software renderer, keep an original for rotation.
     if pygame2.display.window.type == "software":
-        sprite.original = pygame2.display.window.factory.from_surface(surface)
+        sprite.original = pygame2.display.window.factory.from_surface(surface, True)
         sprite.original.pil = pil_surface
+    # If we're using a texture renderer, keep a software copy of the surface.
     else:
-        sprite.sw_sprite = pygame2.display.window.sw_factory.from_surface(surface)
+        sprite.sw_sprite = pygame2.display.window.sw_factory.from_surface(surface, True)
         sprite.sw_sprite.pil = pil_surface
 
     image = pygame2.Surface(sprite=sprite)

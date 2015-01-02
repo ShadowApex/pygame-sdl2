@@ -17,7 +17,11 @@ def scale(surface, size, dest_sprite=None, resample=0):
     sprite = surface.sprite
 
     # Resize the image using PIL
-    img = sprite.pil.resize(size, resample)
+    try:
+        img = sprite.pil.resize(size, resample)
+    except AttributeError:
+        print "ERROR: This surface does not have a PIL object! Resizing image failed."
+        return surface
 
     # Create an SDL2 surface from our sprite.
     surface, pil_surface = pygame2.image.load_image(img)

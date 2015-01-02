@@ -4,7 +4,8 @@ import time
 
 class Clock(object):
     def __init__(self):
-        self.time_old = time.time()
+        self.time_created = time.time()
+        self.time_old = self.time_created
         self.time_elapsed = 1
 
     def tick(self, framerate=0):
@@ -24,3 +25,10 @@ class Clock(object):
 
     def get_fps(self):
         return 1./self.time_elapsed
+
+    def get_ticks(self):
+        return (time.time() - self.time_created) * 1000
+
+
+def get_ticks():
+    return 0

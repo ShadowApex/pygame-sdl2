@@ -28,6 +28,7 @@ class Window(object):
         self.world = sdl2.ext.World()
         self.systems = []
         self.sprites = []
+        self.to_blit = []
 
         # Set up our renderer.
         if type == "software":
@@ -55,8 +56,12 @@ class Window(object):
         #if self.type == "hardware":
         #    self.texture_renderer.clear()
 
-        if self.sprites:
-            self.sprite_renderer.render(self.sprites)
+        #if self.sprites:
+        #    self.sprite_renderer.render(self.sprites)
+        if self.to_blit:
+            self.sprite_renderer.render(self.to_blit)
+            self.to_blit = []
+
         #self.world.process()
         self.sdl2_window.refresh()
 
@@ -69,7 +74,8 @@ class Window(object):
             sprite.x = position[0]
             sprite.y = position[1]
 
-        self.sprite_renderer.render(sprite)
+        #self.sprite_renderer.render(sprite)
+        self.to_blit.append(sprite)
 
 
     def toggle_fullscreen(self):
