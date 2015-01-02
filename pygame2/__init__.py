@@ -110,6 +110,7 @@ class Surface(object):
         # Right now this does nothing
         pass
 
+
     def subsurface(self, rect):
 
         if len(rect) == 3:
@@ -117,12 +118,9 @@ class Surface(object):
         elif len(rect) == 2:
             rect = (rect[0][0], rect[0][1], rect[1][0], rect[1][1])
 
-        print "* WARNING: we need to find out how to create a PIL object for this subsurface."
-
         if pygame2.display.window.type == "software":
             surface = sdl2.ext.subsurface(self.sprite.surface, rect)
             sprite = pygame2.display.window.factory.from_surface(surface)
-            sprite.angle = 0
             sprite.original = pygame2.display.window.factory.from_surface(surface)
         else:
             # https://wiki.libsdl.org/SDL_RenderCopyEx
@@ -131,7 +129,9 @@ class Surface(object):
             surface = sdl2.ext.subsurface(self.sprite.sw_sprite.surface, rect)
             sprite = pygame2.display.window.factory.from_surface(surface)
             sprite.sw_sprite = pygame2.display.window.sw_factory.from_surface(surface)
-            sprite.angle = 0
+
+        sprite.angle = self.sprite.angle
+        sprite.pil = self.sprite.pil.crop(rect) # Dirty hack to get a PIL object of subsurf.
 
         return Surface(sprite=sprite)
             

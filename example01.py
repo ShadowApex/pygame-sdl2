@@ -15,8 +15,9 @@ asteroid = pygame.transform.scale(asteroid, (100, 100))
 # Copying surfaces.
 asteroid2 = asteroid.copy()
 
-# Creating subsurfaces.
+# Creating and scaling subsurfaces.
 asteroid_subsurface = asteroid.subsurface((10, 10, 50, 50))
+asteroid_subsurface = pygame.transform.scale(asteroid_subsurface, (10, 10))
 
 
 while True: # main game loop
@@ -30,4 +31,7 @@ while True: # main game loop
     screen.blit(asteroid2, (300, 200))
     screen.blit(asteroid_subsurface, (200, 150))
     pygame.display.update()
+
+
+
 
