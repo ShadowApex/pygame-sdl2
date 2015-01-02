@@ -17,6 +17,8 @@ import pygame2.transform
 import pygame2.time
 import pygame2.font
 
+from PIL import Image
+
 
 # Temporary Pygame constants. Will replace these with
 # the real constants in the future.
@@ -57,23 +59,25 @@ class Surface(object):
         return self
 
     def fill(self, color):
-        # If a sprite hasn't been created, create an empty one.
-        if not self.sprite:
 
-            # Create a sprite.
-            sprite = pygame2.display.window.factory.from_color(color, self.size)
-            sprite.angle = 0
+        # Let's try PIL instead
+        img = Image.new("RGBA", self.size, color)
 
-            # If we're using a software renderer, keep an original for rotation.
-            if pygame2.display.window.type == "software":
-                sprite.original = pygame2.display.window.factory.from_color(color, self.size)
-            else:
-                sprite.sw_sprite = pygame2.display.window.sw_factory.from_color(color, self.size)
+        # Create an SDL2 surface from our sprite.
+        surface, pil_surface = pygame2.image.load_image(img)
 
-            self.sprite = sprite
+        # Create a new sprite from the surface.
+        sprite = pygame2.display.window.factory.from_surface(surface)
+        sprite.angle = 0
+        sprite.pil = pil_surface
 
+        # If we're using a software renderer, keep an original for rotation.
+        if pygame2.display.window.type == "software":
+            sprite.original = pygame2.display.window.factory.from_surface(surface, True)
         else:
-            sdl2.ext.fill(self.sprite, color)
+            sprite.sw_sprite = pygame2.display.window.sw_factory.from_surface(surface, True)
+
+        self.sprite = sprite
 
 
     def get_alpha(self):
@@ -105,6 +109,8 @@ class Surface(object):
         else:
             # We need to re-create our hardware surface from the surface
             sdl2.SDL_SetTextureAlphaMod(self.sprite.texture, int(value))
+
+        self.alpha = value
 
     def set_colorkey(self, colorkey):
         # Right now this does nothing
